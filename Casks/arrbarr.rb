@@ -11,6 +11,12 @@ cask "arrbarr" do
 
   app "ArrBarr.app"
 
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-cr", "#{appdir}/ArrBarr.app"],
+                   sudo: false
+  end
+
   zap trash: [
     "~/Library/Preferences/com.preclowski.ArrBarr.plist",
   ]
