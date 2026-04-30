@@ -1,6 +1,6 @@
 cask "arrbarr" do
-  version "0.8.0"
-  sha256 "aa9b1cbf97d52350569787166f9eda0b277b56b9ad3dd19e41682206c8e6bf28"
+  version "0.8.2"
+  sha256 "06837143aae69be5f03c319bf563eaabc8f81798fd54fe96ce4499a93ee4bb61"
 
   url "https://github.com/Preclowski/ArrBarr/releases/download/v#{version}/ArrBarr.dmg"
   name "ArrBarr"
