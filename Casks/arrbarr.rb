@@ -16,17 +16,21 @@ cask "arrbarr" do
   # relaunch.
   preflight do
     sentinel = "/tmp/arrbarr-was-running"
+
+    # A leftover sentinel means an earlier upgrade was interrupted; clear it so
+    # postflight won't relaunch an app the user isn't currently running.
+    stale = File.exist?(sentinel)
+    File.delete(sentinel) if stale
+
     pgrep = system_command "/usr/bin/pgrep",
-                           args: ["-x", "ArrBarr"],
+                           args:         ["-x", "ArrBarr"],
                            must_succeed: false
     if pgrep.success?
       File.write(sentinel, "1")
       system_command "/usr/bin/osascript",
-                     args: ["-e", 'tell application "ArrBarr" to quit'],
+                     args:         ["-e", 'tell application "ArrBarr" to quit'],
                      must_succeed: false
       sleep 1
-    elsif File.exist?(sentinel)
-      File.delete(sentinel)
     end
   end
 
