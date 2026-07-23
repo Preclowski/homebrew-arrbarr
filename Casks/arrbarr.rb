@@ -7,7 +7,7 @@ cask "arrbarr" do
   desc "Menu bar app for monitoring Radarr and Sonarr download queues"
   homepage "https://github.com/Preclowski/ArrBarr"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "ArrBarr.app"
 
@@ -43,7 +43,5 @@ cask "arrbarr" do
     end
   end
 
-  zap trash: [
-    "~/Library/Preferences/com.preclowski.ArrBarr.plist",
-  ]
+  zap trash: "~/Library/Preferences/pl.incred.ArrBarr.plist"
 end
