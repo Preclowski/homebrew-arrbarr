@@ -12,38 +12,31 @@ cask "arrbarr" do
   app "ArrBarr.app"
 
   # Quit a running instance before the upgrade so the .app on disk can be
-  # replaced cleanly. Drop a sentinel file so postflight knows whether to
-  # relaunch.
-  preflight do
-    sentinel = "/tmp/arrbarr-was-running"
-
-    # A leftover sentinel means an earlier upgrade was interrupted; clear it so
-    # postflight won't relaunch an app the user isn't currently running.
-    stale = File.exist?(sentinel)
-    File.delete(sentinel) if stale
-
-    pgrep = system_command "/usr/bin/pgrep",
-                           args:         ["-x", "ArrBarr"],
-                           must_succeed: false
-    if pgrep.success?
-      File.write(sentinel, "1")
-      system_command "/usr/bin/osascript",
-                     args:         ["-e", 'tell application "ArrBarr" to quit'],
-                     must_succeed: false
-      sleep 1
-    end
+  # replaced cleanly. A sentinel file tells postflight whether to relaunch it;
+  # a leftover one from an interrupted upgrade is cleared first.
+  preflight_steps do
+    run "/bin/sh",
+        args:         [
+          "-c",
+          "rm -f /tmp/arrbarr-was-running; " \
+          "/usr/bin/pgrep -x ArrBarr >/dev/null 2>&1 || exit 0; " \
+          ": > /tmp/arrbarr-was-running; " \
+          "/usr/bin/osascript -e 'tell application \"ArrBarr\" to quit'; " \
+          "sleep 1",
+        ],
+        must_succeed: false
   end
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-cr", "#{appdir}/ArrBarr.app"],
-                   sudo: false
-    sentinel = "/tmp/arrbarr-was-running"
-    if File.exist?(sentinel)
-      File.delete(sentinel)
-      system_command "/usr/bin/open",
-                     args: ["-a", "#{appdir}/ArrBarr.app"],
-                     sudo: false
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-cr", "{{appdir}}/ArrBarr.app"]
+
+    if_path_exists "/tmp/arrbarr-was-running" do
+      run "/bin/sh",
+          args:         [
+            "-c",
+            "rm -f /tmp/arrbarr-was-running; /usr/bin/open -a '{{appdir}}/ArrBarr.app'",
+          ],
+          must_succeed: false
     end
   end
 
