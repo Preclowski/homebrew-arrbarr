@@ -2,6 +2,12 @@ cask "arrbarr" do
   version "2.1.0"
   sha256 "50bec837c513fea7f6132260da5b3428b130e4307ca3e9d414a25b787a89486b"
 
+  # 3.x needs macOS 26; older Macs stay on the last release that runs there.
+  on_sequoia :or_older do
+    version "2.1.0"
+    sha256 "50bec837c513fea7f6132260da5b3428b130e4307ca3e9d414a25b787a89486b"
+  end
+
   url "https://github.com/Preclowski/ArrBarr/releases/download/v#{version}/ArrBarr.dmg"
   name "ArrBarr"
   desc "Menu bar app for monitoring Radarr and Sonarr download queues"
