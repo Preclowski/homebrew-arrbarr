@@ -1,6 +1,6 @@
 cask "arrbarr" do
-  version "3.2.0"
-  sha256 "2a4b664b172cf8a25cafa880b8e043627f86013acbc170b996ebf8c63de407dc"
+  version "3.3.0"
+  sha256 "818a268346d8b3f845c2e6dcd8546f918ed6a4debf445b70ca5b7d31a4fa48ee"
 
   # 3.x needs macOS 26; older Macs stay on the last release that runs there.
   on_sequoia :or_older do
